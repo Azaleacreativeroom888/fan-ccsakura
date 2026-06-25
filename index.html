@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sakura Card Archive ✦ カードキャプターさくら ファンサイト</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Sans+JP:wght@300;400;500&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --pink-light: #FFF0F5;
+      --pink-mid:   #FFB7C5;
+      --pink-deep:  #F0719A;
+      --gold:       #F5C842;
+      --gold-soft:  #FFF0C0;
+      --navy:       #1A1040;
+      --navy-soft:  #2D1B6E;
+      --star-white: #FFFAF8;
+      --text-main:  #3A2050;
+      --text-soft:  #7A5A80;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--star-white);
+      color: var(--text-main);
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAVIGATION ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 3rem;
+      background: rgba(255,240,245,0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,183,197,0.4);
+    }
+
+    .nav-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      letter-spacing: 0.12em;
+      color: var(--navy-soft);
+      text-decoration: none;
+    }
+
+    .nav-logo span {
+      color: var(--pink-deep);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2.4rem;
+    }
+
+    nav ul a {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 400;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      color: var(--text-soft);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+
+    nav ul a:hover { color: var(--pink-deep); }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: linear-gradient(160deg, #FFF0F5 0%, #FDE8F5 40%, #EDE0FF 100%);
+      overflow: hidden;
+      padding-top: 80px;
+      text-align: center;
+    }
+
+    /* Magic circle */
+    .magic-circle {
+      position: absolute;
+      width: 520px;
+      height: 520px;
+      border: 1.5px solid rgba(245,200,66,0.25);
+      border-radius: 50%;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: spin-slow 40s linear infinite;
+    }
+
+    .magic-circle::before {
+      content: '';
+      position: absolute;
+      inset: 24px;
+      border: 1px dashed rgba(240,113,154,0.2);
+      border-radius: 50%;
+      animation: spin-slow 28s linear infinite reverse;
+    }
+
+    .magic-circle::after {
+      content: '';
+      position: absolute;
+      inset: 56px;
+      border: 1.5px solid rgba(245,200,66,0.15);
+      border-radius: 50%;
+    }
+
+    @keyframes spin-slow {
+      from { transform: translate(-50%,-50%) rotate(0deg); }
+      to   { transform: translate(-50%,-50%) rotate(360deg); }
+    }
+
+    /* Stars canvas */
+    #starCanvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      color: var(--pink-deep);
+      text-transform: uppercase;
+      margin-bottom: 1.4rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 700;
+      line-height: 1.12;
+      color: var(--navy);
+      margin-bottom: 0.5rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.5s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--pink-deep);
+    }
+
+    .hero-subtitle {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(1rem, 2vw, 1.35rem);
+      color: var(--text-soft);
+      margin: 1.2rem 0 2.4rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.7s forwards;
+    }
+
+    .hero-card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: white;
+      border: 1px solid var(--pink-mid);
+      border-radius: 2rem;
+      padding: 0.5rem 1.4rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      color: var(--text-soft);
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.9s forwards;
+    }
+
+    .hero-card-badge .dot {
+      width: 6px; height: 6px;
+      background: var(--pink-deep);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.5; transform: scale(1.4); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* scroll cue */
+    .scroll-cue {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-soft);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.4s forwards;
+    }
+
+    .scroll-cue .line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--pink-mid), transparent);
+      animation: grow 1.8s ease infinite;
+    }
+
+    @keyframes grow {
+      0%,100% { transform: scaleY(0.4); opacity: 0.4; }
+      50%      { transform: scaleY(1);   opacity: 1; }
+    }
+
+    /* ─── SECTION SHARED ─── */
+    section {
+      padding: 6rem 2rem;
+    }
+
+    .section-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.3em;
+      color: var(--pink-deep);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      color: var(--navy);
+      margin-bottom: 2rem;
+    }
+
+    /* ─── ABOUT TEASER ─── */
+    .about-section {
+      background: white;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .about-text p {
+      font-size: 0.92rem;
+      line-height: 1.9;
+      color: var(--text-soft);
+      margin-bottom: 1rem;
+    }
+
+    .about-text p strong {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .card-deco {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .card-tile {
+      background: linear-gradient(135deg, var(--pink-light) 0%, #EDE0FF 100%);
+      border-radius: 12px;
+      padding: 1.8rem 1.2rem;
+      text-align: center;
+      border: 1px solid rgba(255,183,197,0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card-tile:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(240,113,154,0.15);
+    }
+
+    .card-tile .star { font-size: 1.6rem; margin-bottom: 0.4rem; }
+    .card-tile .label {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--text-soft);
+    }
+
+    /* ─── SITE LINKS ─── */
+    .links-section {
+      background: var(--pink-light);
+    }
+
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.4rem;
+    }
+
+    .link-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2.2rem 1.8rem;
+      text-decoration: none;
+      border: 1px solid rgba(255,183,197,0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      display: block;
+    }
+
+    .link-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(240,113,154,0.18);
+      border-color: var(--pink-mid);
+    }
+
+    .link-card .icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .link-card .name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      color: var(--navy);
+      margin-bottom: 0.5rem;
+    }
+
+    .link-card .desc {
+      font-size: 0.78rem;
+      color: var(--text-soft);
+      line-height: 1.6;
+    }
+
+    .link-card .arrow {
+      margin-top: 1.2rem;
+      font-size: 0.72rem;
+      color: var(--pink-deep);
+      letter-spacing: 0.1em;
+    }
+
+    /* ─── LATEST ENTRIES TEASER ─── */
+    .blog-teaser-section {
+      background: white;
+    }
+
+    .blog-entries {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .blog-entry {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 1.6rem;
+      padding: 1.4rem 0;
+      border-bottom: 1px solid rgba(255,183,197,0.3);
+      align-items: start;
+    }
+
+    .blog-entry:first-child { border-top: 1px solid rgba(255,183,197,0.3); }
+
+    .entry-date {
+      font-family: 'Cinzel', serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: var(--pink-deep);
+      padding-top: 0.15rem;
+    }
+
+    .entry-text {
+      font-size: 0.88rem;
+      line-height: 1.75;
+      color: var(--text-soft);
+    }
+
+    .view-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 2rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      color: var(--pink-deep);
+      text-decoration: none;
+      border-bottom: 1px solid var(--pink-mid);
+      padding-bottom: 2px;
+      transition: gap 0.2s;
+    }
+
+    .view-more:hover { gap: 0.8rem; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--navy);
+      color: rgba(255,255,255,0.4);
+      text-align: center;
+      padding: 3rem 2rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      line-height: 2;
+    }
+
+    footer a {
+      color: rgba(255,183,197,0.6);
+      text-decoration: none;
+    }
+
+    footer .footer-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.2em;
+      margin-bottom: 1rem;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 700px) {
+      nav { padding: 1rem 1.4rem; }
+      nav ul { gap: 1.2rem; }
+      .about-grid { grid-template-columns: 1fr; }
+      .links-grid { grid-template-columns: 1fr 1fr; }
+      .magic-circle { width: 300px; height: 300px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">✦ <span>Sakura</span> Card Archive</a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <canvas id="starCanvas"></canvas>
+    <div class="magic-circle"></div>
+
+    <div class="hero-content">
+      <p class="hero-eyebrow">✦ Fan Site ✦ ファンサイト</p>
+      <h1 class="hero-title">
+        Sakura<br><em>Card Archive</em>
+      </h1>
+      <p class="hero-subtitle">カードキャプターさくら　をめぐる記録と愛</p>
+      <div class="hero-card-badge">
+        <span class="dot"></span>
+        個人ファンサイト — 非公式
+      </div>
+    </div>
+
+    <div class="scroll-cue">
+      <span>scroll</span>
+      <div class="line"></div>
+    </div>
+  </section>
+
+  <!-- ABOUT TEASER -->
+  <section class="about-section">
+    <div class="section-inner">
+      <div class="about-grid">
+        <div class="about-text">
+          <p class="section-label">✦ このサイトについて</p>
+          <h2 class="section-title">魔法と記憶を<br>集める場所</h2>
+          <p>CLAMP原作の『カードキャプターさくら』を愛してやまない管理人が作った、ひっそりとしたファンサイトです。</p>
+          <p>イラストや漫画を描いたり、<strong>クロウカードの考察</strong>をしたり、日々の学習の記録を残したり。さくらちゃんと一緒に、少しずつ積み重ねていく場所です。</p>
+          <a href="about.html" class="view-more">About this site →</a>
+        </div>
+        <div class="card-deco">
+          <div class="card-tile">
+            <div class="star">🌸</div>
+            <div class="label">SAKURA CARD</div>
+          </div>
+          <div class="card-tile">
+            <div class="star">⭐</div>
+            <div class="label">CLOW CARD</div>
+          </div>
+          <div class="card-tile">
+            <div class="star">🔮</div>
+            <div class="label">MAGIC CIRCLE</div>
+          </div>
+          <div class="card-tile">
+            <div class="star">🪄</div>
+            <div class="label">SEALING WAND</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SITE LINKS -->
+  <section class="links-section">
+    <div class="section-inner">
+      <p class="section-label">✦ コンテンツ</p>
+      <h2 class="section-title">サイトマップ</h2>
+      <div class="links-grid">
+        <a href="gallery.html" class="link-card">
+          <div class="icon">🎨</div>
+          <div class="name">Gallery</div>
+          <div class="desc">描いたイラストや漫画を飾っています。さくらちゃんをもっとたくさん描いていきたいな。</div>
+          <div class="arrow">→ ギャラリーへ</div>
+        </a>
+        <a href="blog.html" class="link-card">
+          <div class="icon">📖</div>
+          <div class="name">Blog</div>
+          <div class="desc">勉強の進捗や日々の記録。小さなことでも書き留めておく、日記のようなページ。</div>
+          <div class="arrow">→ ブログへ</div>
+        </a>
+        <a href="about.html" class="link-card">
+          <div class="icon">✦</div>
+          <div class="name">About</div>
+          <div class="desc">管理人とこのサイトについて。好きなカードや推しキャラも書いています。</div>
+          <div class="arrow">→ アバウトへ</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOG TEASER -->
+  <section class="blog-teaser-section">
+    <div class="section-inner">
+      <p class="section-label">✦ 最近の記録</p>
+      <h2 class="section-title">Blog</h2>
+      <div class="blog-entries">
+        <div class="blog-entry">
+          <div class="entry-date">2025.06.20</div>
+          <div class="entry-text">さくらちゃんのスケッチ練習。光の当たり方がまだうまくいかない。</div>
+        </div>
+        <div class="blog-entry">
+          <div class="entry-date">2025.06.15</div>
+          <div class="entry-text">ファンサイト、少しずつ形になってきた。ギャラリーページを作り始めた。</div>
+        </div>
+        <div class="blog-entry">
+          <div class="entry-date">2025.06.08</div>
+          <div class="entry-text">原作全巻読み返し。クロウカードの封印シーンは何度見ても好き。</div>
+        </div>
+      </div>
+      <a href="blog.html" class="view-more">すべての記録を見る →</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">✦ SAKURA CARD ARCHIVE</div>
+    <p>カードキャプターさくら は CLAMP・講談社の著作物です。このサイトは非公式のファンサイトです。</p>
+    <p>© 2025 Sakura Card Archive — 管理人による個人サイト</p>
+    <p style="margin-top:0.8rem;">当サイトのコンテンツ（イラスト・文章）の無断転載・AI学習への使用を禁じます。</p>
+  </footer>
+
+  <!-- STAR PARTICLE ANIMATION -->
+  <script>
+    const canvas = document.getElementById('starCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+      canvas.width  = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const STAR_COUNT = 60;
+    const stars = Array.from({ length: STAR_COUNT }, () => ({
+      x: Math.random(),
+      y: Math.random(),
+      r: Math.random() * 2 + 0.5,
+      speed: Math.random() * 0.0002 + 0.00005,
+      phase: Math.random() * Math.PI * 2,
+      type: Math.random() < 0.3 ? 'diamond' : 'circle',
+    }));
+
+    function drawDiamond(ctx, x, y, r) {
+      ctx.beginPath();
+      ctx.moveTo(x, y - r * 2);
+      ctx.lineTo(x + r, y);
+      ctx.lineTo(x, y + r * 2);
+      ctx.lineTo(x - r, y);
+      ctx.closePath();
+    }
+
+    function animate(t) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const s of stars) {
+        const blink = 0.4 + 0.6 * Math.abs(Math.sin(t * 0.001 * s.speed * 5000 + s.phase));
+        ctx.globalAlpha = blink * 0.7;
+        ctx.fillStyle = s.type === 'diamond' ? '#F5C842' : '#F0719A';
+        const px = s.x * canvas.width;
+        const py = ((s.y + t * s.speed) % 1) * canvas.height;
+        if (s.type === 'diamond') {
+          drawDiamond(ctx, px, py, s.r);
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.arc(px, py, s.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
+  </script>
+
+</body>
+</html>
