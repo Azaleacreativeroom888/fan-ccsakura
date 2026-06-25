@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog ✦ Sakura Card Archive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Sans+JP:wght@300;400;500&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --pink-light: #FFF0F5;
+      --pink-mid:   #FFB7C5;
+      --pink-deep:  #F0719A;
+      --gold:       #F5C842;
+      --gold-soft:  #FFF0C0;
+      --navy:       #1A1040;
+      --navy-soft:  #2D1B6E;
+      --star-white: #FFFAF8;
+      --text-main:  #3A2050;
+      --text-soft:  #7A5A80;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--star-white);
+      color: var(--text-main);
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAVIGATION ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 3rem;
+      background: rgba(255,240,245,0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,183,197,0.4);
+    }
+
+    .nav-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      letter-spacing: 0.12em;
+      color: var(--navy-soft);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--pink-deep); }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2.4rem;
+    }
+
+    nav ul a {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 400;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      color: var(--text-soft);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+
+    nav ul a:hover,
+    nav ul a.active { color: var(--pink-deep); }
+
+    /* ─── PAGE HEADER ─── */
+    .page-header {
+      padding: 7rem 2rem 3.5rem;
+      background: linear-gradient(160deg, #FFF0F5 0%, #FDE8F5 60%, #EDE0FF 100%);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header::before {
+      content: '✦';
+      position: absolute;
+      font-size: 18rem;
+      color: rgba(255,183,197,0.12);
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      pointer-events: none;
+      line-height: 1;
+    }
+
+    .page-header .label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--pink-deep);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .page-header h1 em {
+      font-style: italic;
+      color: var(--pink-deep);
+    }
+
+    .page-header p {
+      margin-top: 0.9rem;
+      font-size: 0.82rem;
+      color: var(--text-soft);
+      letter-spacing: 0.05em;
+    }
+
+    /* ─── BLOG FEED ─── */
+    .feed-wrapper {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+    }
+
+    /* year divider */
+    .year-block {
+      margin-bottom: 3rem;
+    }
+
+    .year-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.25em;
+      color: var(--pink-deep);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.6rem;
+    }
+
+    .year-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(255,183,197,0.5), transparent);
+    }
+
+    /* entry */
+    .entry {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 1.2rem;
+      padding: 1.1rem 0;
+      border-bottom: 1px solid rgba(255,183,197,0.25);
+      align-items: start;
+    }
+
+    .entry:last-child {
+      border-bottom: none;
+    }
+
+    .entry-date {
+      font-family: 'Cinzel', serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      color: var(--pink-deep);
+      line-height: 1.6;
+      padding-top: 0.1rem;
+    }
+
+    .entry-date .month-day {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .entry-body {
+      font-size: 0.9rem;
+      line-height: 1.85;
+      color: var(--text-soft);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--navy);
+      color: rgba(255,255,255,0.4);
+      text-align: center;
+      padding: 3rem 2rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      line-height: 2;
+    }
+
+    footer .footer-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.2em;
+      margin-bottom: 1rem;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 600px) {
+      nav { padding: 1rem 1.4rem; }
+      nav ul { gap: 1.2rem; }
+      .entry { grid-template-columns: 70px 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">✦ <span>Sakura</span> Card Archive</a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="blog.html" class="active">Blog</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <p class="label">✦ 日々の記録</p>
+    <h1>Study <em>Blog</em></h1>
+    <p>勉強の進捗と、小さな日々のメモ。</p>
+  </header>
+
+  <!-- FEED -->
+  <main class="feed-wrapper">
+
+    <div class="year-block">
+      <div class="year-label">2025</div>
+
+      <div class="entry">
+        <div class="entry-date">
+          <span class="month-day">06.20</span>
+          Fri
+        </div>
+        <div class="entry-body">さくらちゃんのスケッチ練習。光の当たり方がまだうまくいかない。ハイライトの入れ方を研究中。</div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-date">
+          <span class="month-day">06.15</span>
+          Sun
+        </div>
+        <div class="entry-body">ファンサイト、少しずつ形になってきた。ギャラリーページを作り始めた。HTMLを書くのは楽しいな。</div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-date">
+          <span class="month-day">06.08</span>
+          Sun
+        </div>
+        <div class="entry-body">原作全巻読み返し。クロウカードの封印シーンは何度見ても好き。「絶対大丈夫だよ」っていう言葉がすごく刺さる。</div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-date">
+          <span class="month-day">06.01</span>
+          Sun
+        </div>
+        <div class="entry-body">CLAMPの線の細さを意識して模写。アナログで描いたけど、ペンのにじみが思ったより出てしまった。</div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-date">
+          <span class="month-day">05.24</span>
+          Sat
+        </div>
+        <div class="entry-body">水彩でさくらカードをイメージしたテクスチャを試した。ウィンザー＆ニュートンのセルリアンブルーがとても好きな発色をしてくれた。</div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-date">
+          <span class="month-day">05.17</span>
+          Sat
+        </div>
+        <div class="entry-body">知世ちゃんの衣装デザインを観察。フリルと刺繍の組み合わせがすごく凝っていて、描くのが難しい。</div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-date">
+          <span class="month-day">05.10</span>
+          Sat
+        </div>
+        <div class="entry-body">ファンサイトを作ろうと決めた日。どんなページ構成にしようか考えながらメモを書いた。</div>
+      </div>
+
+    </div><!-- /.year-block -->
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">✦ SAKURA CARD ARCHIVE</div>
+    <p>カードキャプターさくら は CLAMP・講談社の著作物です。このサイトは非公式のファンサイトです。</p>
+    <p>© 2025 Sakura Card Archive — 管理人による個人サイト</p>
+    <p style="margin-top:0.8rem;">当サイトのコンテンツ（イラスト・文章）の無断転載・AI学習への使用を禁じます。</p>
+  </footer>
+
+</body>
+</html>
