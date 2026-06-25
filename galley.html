@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery ✦ Sakura Card Archive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Sans+JP:wght@300;400;500&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --pink-light: #FFF0F5;
+      --pink-mid:   #FFB7C5;
+      --pink-deep:  #F0719A;
+      --gold:       #F5C842;
+      --navy:       #1A1040;
+      --navy-soft:  #2D1B6E;
+      --star-white: #FFFAF8;
+      --text-main:  #3A2050;
+      --text-soft:  #7A5A80;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--star-white);
+      color: var(--text-main);
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAVIGATION ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 3rem;
+      background: rgba(255,240,245,0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,183,197,0.4);
+    }
+
+    .nav-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      letter-spacing: 0.12em;
+      color: var(--navy-soft);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--pink-deep); }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2.4rem;
+    }
+
+    nav ul a {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 400;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      color: var(--text-soft);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+
+    nav ul a:hover,
+    nav ul a.active { color: var(--pink-deep); }
+
+    /* ─── PAGE HEADER ─── */
+    .page-header {
+      padding: 7rem 2rem 3.5rem;
+      background: linear-gradient(160deg, #FFF0F5 0%, #FDE8F5 60%, #EDE0FF 100%);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header::before {
+      content: '🌸';
+      position: absolute;
+      font-size: 16rem;
+      opacity: 0.07;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      line-height: 1;
+    }
+
+    .page-header .label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--pink-deep);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .page-header h1 em {
+      font-style: italic;
+      color: var(--pink-deep);
+    }
+
+    .page-header p {
+      margin-top: 0.9rem;
+      font-size: 0.82rem;
+      color: var(--text-soft);
+      letter-spacing: 0.05em;
+    }
+
+    /* ─── FILTER TABS ─── */
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      padding: 2.4rem 2rem 0;
+    }
+
+    .filter-btn {
+      font-family: 'Cinzel', serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.45rem 1.2rem;
+      border-radius: 2rem;
+      border: 1px solid rgba(255,183,197,0.5);
+      background: white;
+      color: var(--text-soft);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: var(--pink-deep);
+      color: white;
+      border-color: var(--pink-deep);
+    }
+
+    /* ─── GALLERY GRID ─── */
+    .gallery-wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.8rem 2rem 6rem;
+    }
+
+    .gallery-grid {
+      columns: 3;
+      column-gap: 1.2rem;
+    }
+
+    .gallery-item {
+      break-inside: avoid;
+      margin-bottom: 1.2rem;
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      background: var(--pink-light);
+      border: 1px solid rgba(255,183,197,0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(240,113,154,0.2);
+    }
+
+    /* placeholder art panels (replace src with your images) */
+    .gallery-item .thumb {
+      width: 100%;
+      display: block;
+      aspect-ratio: auto;
+    }
+
+    /* placeholder when no image yet */
+    .placeholder {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--pink-light) 0%, #EDE0FF 100%);
+      color: var(--text-soft);
+      gap: 0.5rem;
+      padding: 3rem 1rem;
+    }
+
+    .placeholder .ph-icon { font-size: 2.4rem; opacity: 0.5; }
+    .placeholder .ph-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--text-soft);
+      opacity: 0.7;
+    }
+
+    /* overlay on hover */
+    .gallery-item .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(26,16,64,0.75) 0%, transparent 55%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.2rem;
+    }
+
+    .gallery-item:hover .overlay { opacity: 1; }
+
+    .overlay .item-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.9rem;
+      color: white;
+      margin-bottom: 0.25rem;
+    }
+
+    .overlay .item-meta {
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      color: rgba(255,183,197,0.85);
+    }
+
+    .overlay .item-tag {
+      display: inline-block;
+      font-family: 'Cinzel', serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: rgba(245,200,66,0.25);
+      color: var(--gold);
+      border: 1px solid rgba(245,200,66,0.4);
+      border-radius: 1rem;
+      padding: 0.2rem 0.6rem;
+      margin-bottom: 0.5rem;
+      width: fit-content;
+    }
+
+    /* hidden items */
+    .gallery-item[data-hidden="true"] {
+      display: none;
+    }
+
+    /* ─── LIGHTBOX ─── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(26,16,64,0.9);
+      backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox-inner {
+      position: relative;
+      max-width: 800px;
+      width: 100%;
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+    }
+
+    .lightbox-img {
+      width: 100%;
+      display: block;
+      max-height: 70vh;
+      object-fit: contain;
+      background: var(--pink-light);
+    }
+
+    .lightbox-placeholder {
+      width: 100%;
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--pink-light) 0%, #EDE0FF 100%);
+      gap: 0.8rem;
+    }
+
+    .lightbox-placeholder .big-icon { font-size: 4rem; opacity: 0.4; }
+
+    .lightbox-info {
+      padding: 1.4rem 1.8rem;
+    }
+
+    .lightbox-info .lb-tag {
+      font-family: 'Cinzel', serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--pink-deep);
+      margin-bottom: 0.4rem;
+    }
+
+    .lightbox-info .lb-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--navy);
+      margin-bottom: 0.3rem;
+    }
+
+    .lightbox-info .lb-date {
+      font-size: 0.75rem;
+      color: var(--text-soft);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,0.9);
+      border: none;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      cursor: pointer;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .lightbox-close:hover { background: var(--pink-mid); }
+
+    /* ─── EMPTY STATE ─── */
+    .empty-state {
+      text-align: center;
+      padding: 5rem 2rem;
+      color: var(--text-soft);
+      display: none;
+    }
+
+    .empty-state .e-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
+    .empty-state p { font-size: 0.85rem; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--navy);
+      color: rgba(255,255,255,0.4);
+      text-align: center;
+      padding: 3rem 2rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      line-height: 2;
+    }
+
+    footer .footer-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.2em;
+      margin-bottom: 1rem;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 800px) {
+      .gallery-grid { columns: 2; }
+      nav { padding: 1rem 1.4rem; }
+      nav ul { gap: 1.2rem; }
+    }
+
+    @media (max-width: 480px) {
+      .gallery-grid { columns: 1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">✦ <span>Sakura</span> Card Archive</a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="gallery.html" class="active">Gallery</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <p class="label">✦ 作品一覧</p>
+    <h1>Fan <em>Gallery</em></h1>
+    <p>イラストと漫画。描いたものをここに残しています。</p>
+  </header>
+
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="illust">Illustration</button>
+    <button class="filter-btn" data-filter="manga">Manga</button>
+  </div>
+
+  <!-- GALLERY -->
+  <div class="gallery-wrapper">
+    <div class="gallery-grid" id="grid">
+
+      <!-- ── 作品をここに追加していく ──
+           data-type: "illust" or "manga"
+           画像がある場合: <img class="thumb" src="images/xxx.jpg" alt="...">
+           画像がない場合: placeholder ブロックをそのまま使う
+      -->
+
+      <div class="gallery-item" data-type="illust"
+           data-title="さくら（春）" data-date="2025.06" data-tag="Illustration">
+        <div class="placeholder">
+          <div class="ph-icon">🌸</div>
+          <div class="ph-label">illustration</div>
+        </div>
+        <div class="overlay">
+          <div class="item-tag">Illustration</div>
+          <div class="item-title">さくら（春）</div>
+          <div class="item-meta">2025.06</div>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-type="manga"
+           data-title="封印の朝" data-date="2025.05" data-tag="Manga">
+        <div class="placeholder" style="padding:4rem 1rem;">
+          <div class="ph-icon">📖</div>
+          <div class="ph-label">manga</div>
+        </div>
+        <div class="overlay">
+          <div class="item-tag">Manga</div>
+          <div class="item-title">封印の朝</div>
+          <div class="item-meta">2025.05</div>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-type="illust"
+           data-title="知世ちゃんスケッチ" data-date="2025.05" data-tag="Illustration">
+        <div class="placeholder" style="padding:2.5rem 1rem;">
+          <div class="ph-icon">✨</div>
+          <div class="ph-label">illustration</div>
+        </div>
+        <div class="overlay">
+          <div class="item-tag">Illustration</div>
+          <div class="item-title">知世ちゃんスケッチ</div>
+          <div class="item-meta">2025.05</div>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-type="illust"
+           data-title="クロウカード習作" data-date="2025.04" data-tag="Illustration">
+        <div class="placeholder" style="padding:3.5rem 1rem;">
+          <div class="ph-icon">🔮</div>
+          <div class="ph-label">illustration</div>
+        </div>
+        <div class="overlay">
+          <div class="item-tag">Illustration</div>
+          <div class="item-title">クロウカード習作</div>
+          <div class="item-meta">2025.04</div>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-type="manga"
+           data-title="ケロちゃんと夕暮れ" data-date="2025.04" data-tag="Manga">
+        <div class="placeholder" style="padding:5rem 1rem;">
+          <div class="ph-icon">🐸</div>
+          <div class="ph-label">manga</div>
+        </div>
+        <div class="overlay">
+          <div class="item-tag">Manga</div>
+          <div class="item-title">ケロちゃんと夕暮れ</div>
+          <div class="item-meta">2025.04</div>
+        </div>
+      </div>
+
+      <div class="gallery-item" data-type="illust"
+           data-title="封印の杖（水彩）" data-date="2025.03" data-tag="Illustration">
+        <div class="placeholder" style="padding:2.8rem 1rem;">
+          <div class="ph-icon">🪄</div>
+          <div class="ph-label">illustration</div>
+        </div>
+        <div class="overlay">
+          <div class="item-tag">Illustration</div>
+          <div class="item-title">封印の杖（水彩）</div>
+          <div class="item-meta">2025.03</div>
+        </div>
+      </div>
+
+    </div><!-- /#grid -->
+
+    <div class="empty-state" id="emptyState">
+      <div class="e-icon">🌸</div>
+      <p>このカテゴリの作品はまだありません。</p>
+    </div>
+
+  </div><!-- /.gallery-wrapper -->
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+    <div class="lightbox-inner">
+      <button class="lightbox-close" id="lbClose" aria-label="閉じる">✕</button>
+      <div class="lightbox-placeholder" id="lbPlaceholder">
+        <div class="big-icon">🌸</div>
+      </div>
+      <img class="lightbox-img" id="lbImg" src="" alt="" style="display:none;">
+      <div class="lightbox-info">
+        <div class="lb-tag" id="lbTag"></div>
+        <div class="lb-title" id="lbTitle"></div>
+        <div class="lb-date" id="lbDate"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">✦ SAKURA CARD ARCHIVE</div>
+    <p>カードキャプターさくら は CLAMP・講談社の著作物です。このサイトは非公式のファンサイトです。</p>
+    <p>© 2025 Sakura Card Archive — 管理人による個人サイト</p>
+    <p style="margin-top:0.8rem;">当サイトのコンテンツ（イラスト・文章）の無断転載・AI学習への使用を禁じます。</p>
+  </footer>
+
+  <script>
+    // ─── FILTER ───
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const items = document.querySelectorAll('.gallery-item');
+    const emptyState = document.getElementById('emptyState');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.dataset.filter;
+        let visible = 0;
+
+        items.forEach(item => {
+          const match = filter === 'all' || item.dataset.type === filter;
+          item.dataset.hidden = match ? 'false' : 'true';
+          if (match) visible++;
+        });
+
+        emptyState.style.display = visible === 0 ? 'block' : 'none';
+      });
+    });
+
+    // ─── LIGHTBOX ───
+    const lightbox = document.getElementById('lightbox');
+    const lbClose  = document.getElementById('lbClose');
+    const lbImg    = document.getElementById('lbImg');
+    const lbPlaceholder = document.getElementById('lbPlaceholder');
+    const lbTag    = document.getElementById('lbTag');
+    const lbTitle  = document.getElementById('lbTitle');
+    const lbDate   = document.getElementById('lbDate');
+
+    items.forEach(item => {
+      item.addEventListener('click', () => {
+        const imgEl = item.querySelector('img.thumb');
+        lbTag.textContent   = item.dataset.tag   || '';
+        lbTitle.textContent = item.dataset.title  || '';
+        lbDate.textContent  = item.dataset.date   || '';
+
+        if (imgEl && imgEl.src) {
+          lbImg.src = imgEl.src;
+          lbImg.alt = item.dataset.title || '';
+          lbImg.style.display = 'block';
+          lbPlaceholder.style.display = 'none';
+        } else {
+          lbImg.style.display = 'none';
+          lbPlaceholder.style.display = 'flex';
+        }
+
+        lightbox.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    lbClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', e => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+  </script>
+
+</body>
+</html>
